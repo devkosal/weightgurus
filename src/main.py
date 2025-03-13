@@ -2,8 +2,13 @@
 from cmath import nan
 from datetime import datetime
 import json
+import os
 
+from dotenv import load_dotenv
 import requests
+
+load_dotenv()
+
 
 def transform_weight(weight):
     """
@@ -69,7 +74,7 @@ class WeightGurus:
         self.__do_login()
         weight_data = self.__get_weight_history()
         return json.dumps(weight_data['operations'][-1])
-    
+
     def get_unremoved_entries(self):
         self.__do_login()
         operations = self.__get_weight_history()["operations"]
@@ -141,7 +146,6 @@ class WeightGurus:
 
         return whole_number + decimal_point
 
-
     def manual_entry(self, weight, bmi=None, body_fat=None, muscle_mass=None, water=None):
         """
         Weight Gurus has a weird way of adding weight, they want integer values (numbers) without decimals.
@@ -178,5 +182,5 @@ class WeightGurus:
 
 
 if __name__ == "__main__":
-    weight_gurus = WeightGurus('username', 'password!')
-    weight_gurus.get_all()
+    weight_gurus = WeightGurus(os.environ['USERNAME'], os.environ['PASSWORD'])
+    print(weight_gurus.get_all())
