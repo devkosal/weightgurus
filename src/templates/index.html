@@ -16,6 +16,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            flex-direction: column;
         }
         .container {
             width: 90%;
@@ -39,13 +40,47 @@
             color: #ccc;
             margin-top: 40px;
         }
+        .fullscreen-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 50px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .fullscreen-btn:hover {
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">
+        <span id="fullscreen-icon">⤢</span> <!-- Unicode icon -->
+    </button>
+
     <div class="container">
         <h2>{{ user_alias }}'s Weight</h2>
         <p>{{ weight }} lbs</p>
         <p class="timestamp">{{ timestamp }}</p>
     </div>
+
+    <script>
+        function toggleFullscreen() {
+            const icon = document.getElementById("fullscreen-icon");
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    icon.textContent = "⤢"; // Change to exit icon
+                }).catch(err => {
+                    alert(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen().then(() => {
+                    icon.textContent = "⤢"; // Change back to enter icon
+                });
+            }
+        }
+    </script>
 </body>
 </html>
