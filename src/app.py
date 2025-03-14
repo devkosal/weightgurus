@@ -20,16 +20,27 @@ def format_timestamp(timestamp):
 
 @app.route("/")
 def home():
-    operation = json.loads(WeightGurus(
-        os.environ["USERNAME"],
-        os.environ["PASSWORD"],
-    ).get_latest())
-    return render_template(
-        "index.html",
-        weight=operation["weight"] / 10,
-        timestamp=format_timestamp(operation["entryTimestamp"]),
-        user_alias=os.environ.get("USER_ALIAS", "User"),
-    )
+    users_json = os.environ.get("USERS_JSON", "[]")  # Get JSON string from env
+    users = json.loads(users_json)  # Parse it into a Python list
+
+    if not users:
+        return "No users configured.", 500
+
+    weight_data = []
+
+    for user in users:
+        username, password, alias = user["username"], user["password"], user["alias"]
+
+        # Get latest weight entry
+        operation = json.loads(WeightGurus(username, password).get_latest())
+
+        weight_data.append({
+            "alias": alias,
+            "weight": operation["weight"] / 10,  # Convert to lbs
+            "timestamp": format_timestamp(operation["entryTimestamp"]),
+        })
+
+    return render_template("index.html", primary_user=weight_data[0], other_users=weight_data[1:])
 
 
 if __name__ == "__main__":

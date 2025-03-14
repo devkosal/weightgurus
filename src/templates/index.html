@@ -3,42 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user_alias }}'s Weight</title>
+    <title>{{ primary_user.alias }}'s Weight</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
             padding: 0;
             background-color: #000;
             color: #fff;
             display: flex;
+            height: 100vh;
+            overflow: hidden; /* Prevent scrolling */
+        }
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        .primary-container {
+            width: 75%;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
-        }
-        .container {
-            width: 90%;
-            max-width: 1800px;
-            padding: 50px;
-            border-radius: 20px;
             background-color: #111;
-            border: 10px solid #fff;
+            border-right: 5px solid #fff;
+            padding: 50px;
+            text-align: center;
         }
-        h2 {
-            font-size: 160px;
+        .primary-container h2 {
+            font-size: 140px;
             margin-bottom: 40px;
         }
-        p {
-            font-size: 200px;
+        .primary-container p {
+            font-size: 180px;
             font-weight: bold;
             margin: 40px 0;
         }
-        .timestamp {
-            font-size: 80px;
+        .primary-container .timestamp {
+            font-size: 70px;
             color: #ccc;
             margin-top: 40px;
+        }
+        .secondary-container {
+            width: 25%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background-color: #222;
+        }
+        .secondary-user {
+            width: 100%;
+            padding: 0px;
+            background-color: #333;
+            border: 3px solid #fff;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .secondary-user h3 {
+            font-size: 50px;
+            margin-bottom: 20px;
+        }
+        .secondary-user p {
+            font-size: 80px;
+            font-weight: bold;
+        }
+        .secondary-user .timestamp {
+            font-size: 30px;
+            color: #ccc;
+            margin-top: 10px;
         }
         .fullscreen-btn {
             position: absolute;
@@ -57,13 +93,29 @@
 </head>
 <body>
     <button class="fullscreen-btn" onclick="toggleFullscreen()">
-        <span id="fullscreen-icon">⤢</span> <!-- Unicode icon -->
+        <span id="fullscreen-icon">⤢</span>
     </button>
 
-    <div class="container">
-        <h2>{{ user_alias }}'s Weight</h2>
-        <p>{{ weight }} lbs</p>
-        <p class="timestamp">{{ timestamp }}</p>
+    <div class="main-container">
+        <!-- Primary User Display (75% width) -->
+        <div class="primary-container">
+            <h2>{{ primary_user.alias }}'s Weight</h2>
+            <p>{{ primary_user.weight }} lbs</p>
+            <p class="timestamp">{{ primary_user.timestamp }}</p>
+        </div>
+
+        <!-- Secondary Users Display (25% width) -->
+        {% if other_users %}
+        <div class="secondary-container">
+            {% for user in other_users %}
+            <div class="secondary-user">
+                <h3>{{ user.alias }}</h3>
+                <p>{{ user.weight }} lbs</p>
+                <p class="timestamp">{{ user.timestamp }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 
     <script>
@@ -71,13 +123,13 @@
             const icon = document.getElementById("fullscreen-icon");
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().then(() => {
-                    icon.textContent = "⤢"; // Change to exit icon
+                    icon.textContent = "⤢";
                 }).catch(err => {
                     alert(`Error attempting to enable fullscreen: ${err.message}`);
                 });
             } else {
                 document.exitFullscreen().then(() => {
-                    icon.textContent = "⤢"; // Change back to enter icon
+                    icon.textContent = "⤢";
                 });
             }
         }

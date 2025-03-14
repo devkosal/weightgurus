@@ -4,9 +4,7 @@ Setup:
 1. Run `pip install -r requirements.txt`
 2. Create `.env` file e.g.
 ```
-USERNAME=johndoe@gmail.com
-PASSWORD=password123
-USER_ALIAS=John
+USERS_JSON='[{"username":"johndoe@gmail.com", "password": "p@ssword", "alias": "John"}]'
 TIMEZONE=America/New_York
 ```
 3. Run `python src/app.py` (runs in development mode)
