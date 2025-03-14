@@ -32,8 +32,11 @@ def home():
     for user in users:
         username, password, alias = user["username"], user["password"], user["alias"]
 
-        # Get latest weight entry
-        operation = json.loads(WeightGurus(username, password).get_latest())
+        try:
+            operation = json.loads(WeightGurus(username, password).get_latest())
+        except Exception as e:
+            print(f"error getting {alias}'s data: {e}")
+            continue
 
         weight_data.append({
             "alias": alias,

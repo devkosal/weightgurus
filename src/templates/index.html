@@ -28,7 +28,7 @@
             align-items: center;
             background-color: #111;
             border-right: 5px solid #fff;
-            padding: 50px;
+            padding: 30px;
             text-align: center;
         }
         .primary-container h2 {
@@ -49,32 +49,39 @@
             width: 25%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-evenly; /* Distribute space dynamically */
             align-items: center;
-            gap: 20px;
-            padding: 20px;
+            padding: 10px;
+            margin: 5px;
             background-color: #222;
+            height: 100%;
         }
         .secondary-user {
             width: 100%;
-            padding: 0px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             background-color: #333;
             border: 3px solid #fff;
             border-radius: 10px;
             text-align: center;
+            padding: 10px;
+            margin: 3px 0;
         }
         .secondary-user h3 {
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: calc(50px - (var(--user-count) * 5px)); /* Dynamically adjust */
+            margin-bottom: 1px;
         }
         .secondary-user p {
-            font-size: 80px;
+            font-size: calc(80px - (var(--user-count) * 8px)); /* Scale text down */
             font-weight: bold;
         }
         .secondary-user .timestamp {
-            font-size: 30px;
+            font-size: calc(30px - (var(--user-count) * 3px));
             color: #ccc;
-            margin-top: 10px;
+            margin-top: 1px;
         }
         .fullscreen-btn {
             position: absolute;
@@ -106,7 +113,7 @@
 
         <!-- Secondary Users Display (25% width) -->
         {% if other_users %}
-        <div class="secondary-container">
+        <div class="secondary-container" id="secondary-users">
             {% for user in other_users %}
             <div class="secondary-user">
                 <h3>{{ user.alias }}</h3>
@@ -133,6 +140,13 @@
                 });
             }
         }
+
+        // Adjust text sizes dynamically based on the number of users
+        document.addEventListener("DOMContentLoaded", function () {
+            const secondaryUsers = document.querySelectorAll(".secondary-user");
+            const userCount = secondaryUsers.length;
+            document.documentElement.style.setProperty("--user-count", userCount);
+        });
     </script>
 </body>
 </html>
