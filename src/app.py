@@ -2,6 +2,7 @@ from datetime import datetime
 import json
 import os
 from flask import Flask, render_template
+from fire import Fire
 import pytz
 
 from main import WeightGurus
@@ -43,5 +44,13 @@ def home():
     return render_template("index.html", primary_user=weight_data[0], other_users=weight_data[1:])
 
 
+def app_run(
+    debug: bool = True,
+    host: str = "127.0.0.1",
+    port: int = 5000,
+):
+    app.run(debug=debug, host=host, port=port)
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    Fire(app_run)
