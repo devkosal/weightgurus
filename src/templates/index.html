@@ -33,26 +33,25 @@
         }
         .primary-container h2 {
             font-size: 140px;
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* Reduce space */
         }
         .primary-container p {
             font-size: 180px;
             font-weight: bold;
-            margin: 40px 0;
+            margin: 20px 0; /* Reduce space */
         }
         .primary-container .timestamp {
             font-size: 70px;
             color: #ccc;
-            margin-top: 40px;
+            margin-top: 20px; /* Reduce space */
         }
         .secondary-container {
             width: 25%;
             display: flex;
             flex-direction: column;
-            justify-content: space-evenly; /* Distribute space dynamically */
+            justify-content: space-evenly; /* Evenly distribute users */
             align-items: center;
-            padding: 10px;
-            margin: 5px;
+            padding: 5px;
             background-color: #222;
             height: 100%;
         }
@@ -67,21 +66,22 @@
             border: 3px solid #fff;
             border-radius: 10px;
             text-align: center;
-            padding: 10px;
+            padding: 5px;
             margin: 3px 0;
         }
         .secondary-user h3 {
-            font-size: calc(50px - (var(--user-count) * 5px)); /* Dynamically adjust */
-            margin-bottom: 1px;
+            font-size: calc(37px - (var(--user-count) * 3px)); /* Reduce size */
+            margin-bottom: 5px; /* Reduce space */
         }
         .secondary-user p {
-            font-size: calc(80px - (var(--user-count) * 8px)); /* Scale text down */
+            font-size: calc(60px - (var(--user-count) * 6px)); /* Reduce size */
             font-weight: bold;
+            margin: 5px 0; /* Reduce space */
         }
         .secondary-user .timestamp {
-            font-size: calc(30px - (var(--user-count) * 3px));
+            font-size: calc(22px - (var(--user-count) * 2px)); /* Reduce size */
             color: #ccc;
-            margin-top: 1px;
+            margin-top: 5px; /* Reduce space */
         }
         .fullscreen-btn {
             position: absolute;
