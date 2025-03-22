@@ -9,6 +9,7 @@ from main import WeightGurus
 
 app = Flask(__name__)
 DEFAULT_TIMEZONE = "America/New_York"
+DEFAULT_LOOKBACK_DAYS = 14
 
 
 def format_timestamp(timestamp):
@@ -33,7 +34,8 @@ def home():
         username, password, alias = user["username"], user["password"], user["alias"]
 
         try:
-            operation = json.loads(WeightGurus(username, password).get_latest())
+            wr = WeightGurus(username, password)
+            operation = wr.get_latest(daily_lookback_days=DEFAULT_LOOKBACK_DAYS)
         except Exception as e:
             print(f"error getting {alias}'s data: {e}")
             continue
@@ -43,6 +45,9 @@ def home():
             "weight": operation["weight"] / 10,  # Convert to lbs
             "timestamp": format_timestamp(operation["entryTimestamp"]),
         })
+
+    if not weight_data:
+        return "No weight successfully data found for the configured users.", 500
 
     return render_template("index.html", primary_user=weight_data[0], other_users=weight_data[1:])
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from cmath import nan
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import os
 
@@ -29,27 +29,38 @@ def transform_weight(weight):
             print(f"Caught ValueError! '{weight}' is not a number.")
 
 
+LOGIN_TIMEOUT_S = 3600  # 1 hour
+
+
 class WeightGurus:
 
     def __init__(self, username, password):
+        self.username = username
         self.login_data = {
-            'email': username,
+            'email': self.username,
             'password': password,
             'web': True
         }
-        self.headers = None
         self.start_date = 'start=1970-01-01T01:00:00.504Z'
         self.weight_history = None
         self.add_weight = {}
+        self._headers = None
+        self.last_login_at = datetime.now()
+
+    @property
+    def headers(self):
+        if self._headers is None or (datetime.now() - self.last_login_at).seconds > LOGIN_TIMEOUT_S:
+            self.__do_login()
+        return self._headers
 
     def __do_login(self):
         req = requests.post('https://api.weightgurus.com/v3/account/login', data=self.login_data)
         try:
             json_data = req.json()
-            self.headers = {'authorization': f"Bearer {json_data['accessToken']}"
-                            }
+            self._headers = {'authorization': f"Bearer {json_data['accessToken']}"}
         except Exception as e:
-            print(f"Caught Exception reading JSON: {e}")
+            print(f"Caught Exception reading JSON while logging in: {e}")
+            raise e
 
     def __get_weight_history(self, start_date=None):
         if start_date:
@@ -63,24 +74,30 @@ class WeightGurus:
         return json_data
 
     def get_all(self):
-        self.__do_login()
-        return json.dumps(self.__get_weight_history(), indent=4, sort_keys=True)
+        return self.__get_weight_history()
 
     def get_since_date(self, start_date):
-        self.__do_login()
-        return json.dumps(self.__get_weight_history(start_date), indent=4, sort_keys=True)
+        return self.__get_weight_history(start_date)
 
-    def get_latest(self):
-        self.__do_login()
-        weight_data = self.__get_weight_history()
-        return json.dumps(weight_data['operations'][-1])
+    def get_latest(self, start_date: str | None = None, daily_lookback_days: int | None = None):
+        if daily_lookback_days:
+            if start_date:
+                print("Warning: start_date will be ignored when `daily_lookback_days` is provided.")
+            today = datetime.now().date()
+            lookback_day = 0
+            while lookback_day < daily_lookback_days:
+                weight_data = self.__get_weight_history(start_date=(today - timedelta(days=lookback_day)).isoformat())
+                if weight_data['operations']:
+                    return weight_data['operations'][-1]
+                lookback_day += 1
+            print(f"No weight data found in the last {daily_lookback_days} days for {self.username}!")
+        weight_data = self.__get_weight_history(start_date=start_date)
+        return weight_data['operations'][-1]
 
     def get_unremoved_entries(self):
-        self.__do_login()
         operations = self.__get_weight_history()["operations"]
         operations = self._clean_operations(operations)
-        return json.dumps(operations, indent=4, sort_keys=True)
-
+        return operations
 
     @staticmethod
     def _clean_operations(operations: list):
@@ -130,9 +147,7 @@ class WeightGurus:
     def _wg_num_to_float(number):
         number = str(number)
         if len(number) <= 1:
-            raise Exception(
-                "Unsure of how weight guru handles numbers this small"
-            )
+            raise Exception("Unsure of how weight guru handles numbers this small")
 
         try:
             whole_number = int(number[:-1])
@@ -152,9 +167,9 @@ class WeightGurus:
         This requires you to take you weight and remove the decimal. So, 100.0 pounds would be 1000 when you add it.
         """
         self.__do_login()
-        self.headers['user-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, ' \
+        self._headers['user-agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, ' \
                                      'like Gecko) Chrome/89.0.4389.128 Safari/537.36'
-        self.headers['content-type'] = 'application/json'
+        self._headers['content-type'] = 'application/json'
         if bmi:
             self.add_weight['bmi'] = int(bmi)
         if body_fat:
