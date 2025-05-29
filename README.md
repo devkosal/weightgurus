@@ -7,7 +7,8 @@ Setup:
 USERS_JSON='[{"username":"johndoe@gmail.com", "password": "p@ssword", "alias": "John"}]'
 TIMEZONE=America/New_York
 ```
-3. Run `python src/app.py` (runs in development mode)
+3. `python3 -m venv venv` and then `source venv/bin/activate`
+4. Run `python src/app.py` (runs in development mode)
 
 
 # weightgurus (from fork origin)
@@ -24,3 +25,8 @@ so this does the best we can with the little information we have.
 
 When using stand-alone you need to add your username and password
 to the main method, then either use 'get_all'
+
+```bash
+source venv/bin/activate 
+python src/app.py --port 5000
+```
