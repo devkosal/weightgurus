@@ -1,12 +1,8 @@
 #!/bin/bash
-# Make executable with: chmod +x ~/Projects/weightsgurus/run_weightsgurus.sh
-
-#!/bin/bash
-cd ~/Projects/weightsgurus
-source venv/bin/activate
+# Make executable with: chmod +x ~/Projects/weightgurus/run_weightsgurus.sh
 
 # Start the app in tmux in the background
-tmux new-session -d -s weightsgurus 'python src/app.py --port 5000'
+tmux new-session -d -s weightgurus 'cd ~/Projects/weightgurus && source venv/bin/activate && python src/app.py --port 5000'
 
 # Wait a moment for the server to start
 sleep 3
@@ -18,5 +14,5 @@ DISPLAY=:0 firefox --new-window http://localhost:5000 &
 sleep 5
 DISPLAY=:0 xdotool search --name "Mozilla Firefox" windowactivate key F11
 
-echo "WeightsGurus is now running!"
-echo "To stop: tmux kill-session -t weightsgurus"
+echo "weightgurus is now running!"
+echo "To stop: tmux kill-session -t weightgurus"
