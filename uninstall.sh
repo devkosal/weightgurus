@@ -1,28 +1,17 @@
 #!/bin/bash
-# uninstall.sh - Remove weightgurus auto-start service
+# uninstall.sh - Remove weightgurus cron job
 
-echo "Removing Weightgurus auto-start service..."
+set -e
+echo "Removing Weightgurus auto-start..."
 
-# Stop the service if it's running
-echo "Stopping service..."
-sudo systemctl stop weightgurus.service 2>/dev/null || echo "Service not running"
+# Check if any weightgurus cron jobs exist
+if crontab -l 2>/dev/null | grep -q "weightgurus"; then
+    # Remove lines containing "weightgurus" from crontab
+    crontab -l 2>/dev/null | grep -v "weightgurus" | crontab -
+    echo "✅ Weightgurus cron job removed!"
+else
+    echo "ℹ️  No weightgurus cron job found."
+fi
 
-# Disable the service
-echo "Disabling service..."
-sudo systemctl disable weightgurus.service 2>/dev/null || echo "Service not enabled"
-
-# Remove the service file
-echo "Removing service file..."
-sudo rm -f /etc/systemd/system/weightgurus.service
-
-# Reload systemd
-echo "Reloading systemd..."
-sudo systemctl daemon-reload
-
-echo ""
-echo "✅ Uninstall complete!"
-echo ""
-echo "📋 What was removed:"
-echo "   • weightgurus.service (systemd service)"
-echo ""
-echo "📝 Note: Your run.sh script was left untouched"
+echo "Current cron jobs:"
+crontab -l 2>/dev/null || echo "No cron jobs remaining."

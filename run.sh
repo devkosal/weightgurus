@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# to have this script run on startup, add it to your crontab
+
 # Start the app in tmux in the background
 tmux new-session -d -s weightgurus 'cd ~/Projects/weightgurus && source venv/bin/activate && python src/app.py --port 5000'
 
