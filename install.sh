@@ -1,5 +1,6 @@
 #!/bin/bash
-# install_service.sh - One-and-done script to setup weightgurus auto-start service
+# install.sh - One-and-done script to setup weightgurus auto-start service
+# Run with `sudo bash install.sh`
 
 set -e  # Exit on any error
 
@@ -35,11 +36,11 @@ Wants=graphical-session.target
 
 [Service]
 Type=forking
-User=pi
-Group=pi
-WorkingDirectory=/home/pi/Projects/weightgurus
+User=dev
+Group=dev
+WorkingDirectory=/home/dev/Projects/weightgurus
 Environment=DISPLAY=:0
-ExecStart=/home/pi/Projects/weightgurus/startup_weightgurus.sh
+ExecStart=/home/dev/Projects/weightgurus/startup_weightgurus.sh
 Restart=on-failure
 RestartSec=5
 
