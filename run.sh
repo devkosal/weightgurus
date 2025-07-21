@@ -1,5 +1,4 @@
 #!/bin/bash
-# Make executable with: chmod +x ~/Projects/weightgurus/run.sh
 
 # Start the app in tmux in the background
 tmux new-session -d -s weightgurus 'cd ~/Projects/weightgurus && source venv/bin/activate && python src/app.py --port 5000'
