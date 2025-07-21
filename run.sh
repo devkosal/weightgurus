@@ -3,7 +3,7 @@
 # to have this script run on startup, add it to your crontab
 
 # Start the app in tmux in the background
-tmux new-session -d -s weightgurus 'cd ~/Projects/weightgurus && source venv/bin/activate && python src/app.py --port 5000'
+/usr/bin/tmux new-session -d -s weightgurus 'cd /home/dev/Projects/weightgurus && /home/dev/Projects/weightgurus/venv/bin/python src/app.py --port 5000'
 
 # Wait a moment for the server to start
 sleep 3
